@@ -12,8 +12,8 @@ import { GEMMA_2_9B_CONFIG } from "../../utils/agent/webllm.ts";
   
     public createConversation = (systemPrompt: string) => {
       const messages: Array<ChatCompletionMessageParam> = [
-        { role: "system", content:  },
-      ];systemPrompt
+        { role: "system", content: systemPrompt },
+      ];
   
       console.log("-- SYSTEM PROMPT --");
       console.log(systemPrompt);
