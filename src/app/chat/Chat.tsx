@@ -140,11 +140,13 @@ import tool from "../../utils/agent/tool.ts";
 import cn from "../../utils/classnames.ts";
 import mdToHtml from "../../utils/converter/mdToHtml.ts";
 import ChatForm from "./ChatForm.tsx";
+import useCart from "../../store/provider/cart/useCart.ts";
+import CartContext from "../../store/provider/cart/CartContext.ts";
 
 const Chat: React.FC = () => {
   const [chatOpen, setChatOpen] = React.useState<boolean>(false);
   const navigate = useNavigate();
-
+  const cart = useCart();
   const { pageContext } = usePageContext();
 
   const [thinking, setThinking] = React.useState<boolean>(false);
@@ -278,6 +280,32 @@ const Chat: React.FC = () => {
             parameters: {
               question: "What is the return policy?",
             },
+          },
+        ],
+      })
+    );
+
+    agent.addTool(
+      "howManyProductsDoIHaveInMyCart",
+      tool({
+        description: "Count the total number of products in the cart",
+        parameters: z.object({}).describe("No parameters are needed"),
+        execute: async () => {
+          const cartProductNum = cart.products.length;
+          return {
+            nextPrompt: `You have ${cartProductNum} products in your cart`,
+            render: () => (
+              <p
+              >
+               You have {cartProductNum}  products in your cart
+              </p>
+            ),
+          };
+        },
+        examples: [
+          {
+            query: "How many products do I have in my cart?",
+            parameters: {},
           },
         ],
       })
